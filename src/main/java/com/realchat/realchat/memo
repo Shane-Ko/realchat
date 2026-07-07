@@ -1,0 +1,15 @@
+회원가입:
+    1. 브라우저에서 username, password 받기 → @RequestBody
+    2. 이미 있는 아이디인가? → userRepository.findByUsername()
+    3. 비밀번호 암호화 → passwordEncoder.encode()
+    4. 저장 → new User() → userRepository.save()
+    5. 응답 → ResponseEntity.ok()
+
+로그인:
+    1. 브라우저에서 username, password 받기 → @RequestBody
+    2. 회원 찾기 → userRepository.findByUsername()
+    3. 비밀번호 맞는지 확인 → passwordEncoder.matches()
+    4. 토큰 발급 → jwtUtil.createToken()
+    5. 응답 → ResponseEntity.ok()
+    
+    
