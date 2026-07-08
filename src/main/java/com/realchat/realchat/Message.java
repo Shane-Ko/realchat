@@ -31,6 +31,8 @@ public class Message {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private Long roomId;
+	
 	private String sender;
 	
 	private String content;
@@ -42,16 +44,19 @@ public class Message {
 		
 	}
 	
-	public Message(String sender, String content) {
-		this.sender = sender;
-		this.content = content;
-		this.createdAt = LocalDateTime.now();	
+	public Message(Long roomId, String sender, String content) {
+	    this.roomId = roomId;
+	    this.sender = sender;
+	    this.content = content;
+	    this.createdAt = LocalDateTime.now();
 	}
 	
 	// Getter
 	public Long getId() {
 		return id;
 	}
+	
+	public Long getRoomId() { return roomId; }
 	
 	public String getSender() {
 		return sender;

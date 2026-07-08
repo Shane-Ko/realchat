@@ -1,50 +1,52 @@
 package com.realchat.realchat;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 /*
  * User 엔티티
  *
- * 회원 한 명의 정보를 담는 클래스.
- * MySQL의 users 테이블과 매핑된다.
- *
- * - @Table(name = "users"): 테이블 이름을 users로 지정
- *   (user는 MySQL 예약어라서 그대로 쓰면 에러남)
- * - username은 중복 불가 (unique = true)
- * - password는 암호화되어 저장됨
+ * online: 접속 중이면 true
+ * lastActiveAt: 마지막 활동 시간
  */
-
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(unique = true, nullable = false)
-	private String username;
-	
-	@Column(nullable = false)
-	private String password;
-	
-	// 기본생성자
-	public User() {
-	}
-	
-	// 매개변수 생성자
-	public User(String username, String password) {
-		this.username = username;
-		this.password = password;
-	}
-	
-	//Getter
-	public Long getId() {return id;}
-	public String getUsername() {return username;}
-	public String getPassword() {return password;}
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(unique = true, nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
+    private String password;
+
+    private boolean online;
+
+    private LocalDateTime lastActiveAt;
+
+    public User() {
+    }
+
+    public User(String username, String nickname, String password) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.online = false;
+    }
+
+    public Long getId() { return id; }
+    public String getUsername() { return username; }
+    public String getNickname() { return nickname; }
+    public String getPassword() { return password; }
+    public boolean isOnline() { return online; }
+    public LocalDateTime getLastActiveAt() { return lastActiveAt; }
+
+    public void setOnline(boolean online) { this.online = online; }
+    public void setLastActiveAt(LocalDateTime lastActiveAt) { this.lastActiveAt = lastActiveAt; }
 }

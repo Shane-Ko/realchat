@@ -37,10 +37,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		// /app 으로 시작하는 메시지는 서버(Controller)가 처리
-		registry.setApplicationDestinationPrefixes("/app");
-		
-		// /topic 으로 시작하는 경로는 구독자에게 메시지를 뿌려주는 역할
-		registry.enableSimpleBroker("/topic");
+	    registry.setApplicationDestinationPrefixes("/app");
+	    
+	    // /topic 으로 시작하는 경로는 구독자에게 메시지를 뿌려주는 역할
+	    registry.enableSimpleBroker("/topic", "/queue");
 	}
 
 }

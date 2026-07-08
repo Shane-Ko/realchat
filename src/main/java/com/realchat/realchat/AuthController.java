@@ -1,14 +1,17 @@
 package com.realchat.realchat;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 /*
  * AuthController
@@ -26,34 +29,42 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class AuthController {
 	
-    private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
-    private final BCryptPasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final JwtUtil jwtUtil;
+	private final BCryptPasswordEncoder passwordEncoder;
+	private final SimpMessagingTemplate messagingTemplate;
 
-    public AuthController(UserRepository userRepository, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
+	public AuthController(UserRepository userRepository, JwtUtil jwtUtil,
+	                      SimpMessagingTemplate messagingTemplate) {
+	    this.userRepository = userRepository;
+	    this.jwtUtil = jwtUtil;
+	    this.passwordEncoder = new BCryptPasswordEncoder();
+	    this.messagingTemplate = messagingTemplate;
+	}
     
     
     // 회원가입 API
-    @PostMapping("/signup")		// /signup 으로 요청이 오면 실행
-    public ResponseEntity<?> signup(@RequestBody Map<String, String> request ) {
-    	String username = request.get("username");
-    	String password = request.get("password");
-    	
-    	// 이미 있는 username 인지 확인
-    	if (userRepository.findByUsername(username).isPresent()) {
-    		return ResponseEntity.badRequest().body(Map.of("error", "이미 존재하는 아이디 입니다."));
-    	}
-    	
-    	// 비밀번호 암호화 후 저장
-    	User user = new User(username, passwordEncoder.encode(password));
-    	userRepository.save(user);
-    	
-    	
-    	return ResponseEntity.ok(Map.of("message", "가입완료"));
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String nickname = request.get("nickname");
+        String password = request.get("password");
+
+        // 아이디 중복 확인
+        if (userRepository.findByUsername(username).isPresent()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "이미 사용중인 아이디입니다"));
+        }
+
+        // 닉네임 중복 확인
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "이미 사용중인 닉네임입니다"));
+        }
+
+        // 비밀번호 암호화 후 저장
+        User user = new User(username, nickname, passwordEncoder.encode(password));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of("message", "가입 완료"));
     }
     
     // 로그인 API
@@ -78,14 +89,43 @@ public class AuthController {
     		return ResponseEntity.badRequest().body(Map.of("error","비밀번호가 틀렸습니다."));
     	}
     	
+    	// 로그인 성공 → 접속 상태 변경
+    	user.setOnline(true);
+    	user.setLastActiveAt(LocalDateTime.now());
+    	userRepository.save(user);
+    	
+    	// 접속 상태 변경 알림
+    	messagingTemplate.convertAndSend("/topic/notify",
+    	    Map.of("type", "USER_STATUS", "nickname", user.getNickname(), "online", true));
+    	
     	// 로그인 성공 - JWT 토큰 발급
     	String token = jwtUtil.createToken(username);
     	
-    	return ResponseEntity.ok(
-    			Map.of (
-    			"message","로그인 성공",
-    			"token",token,
-    			"username",username)
-    			);
+    	return ResponseEntity.ok(Map.of(
+    		    "message", "로그인 성공",
+    		    "token", token,
+    		    "username", username,
+    		    "nickname", user.getNickname()
+    		));
+    }
+    
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtUtil.getUsername(token);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setOnline(false);
+            userRepository.save(user);
+
+            // 접속 상태 변경 알림
+            messagingTemplate.convertAndSend("/topic/notify",
+                Map.of("type", "USER_STATUS", "nickname", user.getNickname(), "online", false));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "로그아웃 완료"));
     }
 }
