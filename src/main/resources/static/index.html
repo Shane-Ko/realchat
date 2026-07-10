@@ -7,13 +7,13 @@
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&family=Nanum+Pen+Script&display=swap');
 
         /* ====== 테마 변수 ====== */
-        [data-theme="geek"] {
-            --bg: #0b0f14;
-            --container-bg: #0d1117;
-            --header-bg: #161b22;
-            --border: #1a2332;
-            --text: #c9d1d9;
-            --text-dim: #484f58;
+		[data-theme="geek"] {
+		    --bg: #0f1318;
+		    --container-bg: #141a22;
+		    --header-bg: #1c2430;
+		    --border: #2a3545;
+		    --text: #e0e6ed;
+		    --text-dim: #6b7685;
             --accent: #00d4aa;
             --accent2: #58a6ff;
             --error: #f85149;
@@ -566,7 +566,7 @@
 
         <!-- 상단 바 -->
         <div class="title-bar">
-            <h2 id="app-title">KOPO_CHAT() {</h2>
+            <h2 id="app-title">KOPO_CHAT{</h2>
             <div class="header-right">
                 <span class="version">v1.0.0</span>
 				<select id="theme-select" class="theme-select" onchange="changeTheme(this.value)">
@@ -698,45 +698,94 @@
 		    updateThemeUI(theme);
 		}
 
-        function updateThemeUI(theme) {
-            const icon = document.getElementById('theme-icon');
-            const label = document.getElementById('theme-label');
-            const title = document.getElementById('app-title');
-            const loginBtn = document.getElementById('login-btn');
-            const signupBtn = document.getElementById('signup-btn');
-            const logoutBtn = document.getElementById('logout-btn');
-            const statusText = document.getElementById('status-text');
-            const leaveBtn = document.getElementById('leave-btn');
-            const backBtn = document.getElementById('back-btn');
-            const modalTitle = document.getElementById('modal-title');
-            const membersInner = document.getElementById('members-panel-inner');
+		function updateThemeUI(theme) {
+		    const title = document.getElementById('app-title');
+		    const loginBtn = document.getElementById('login-btn');
+		    const signupBtn = document.getElementById('signup-btn');
+		    const logoutBtn = document.getElementById('logout-btn');
+		    const statusText = document.getElementById('status-text');
+		    const leaveBtn = document.getElementById('leave-btn');
+		    const backBtn = document.getElementById('back-btn');
+		    const modalTitle = document.getElementById('modal-title');
+		    const membersBtn = document.getElementById('members-btn');
+		    const messageInput = document.getElementById('message-input');
+		    const tabUsers = document.getElementById('tab-users');
+		    const tabRooms = document.getElementById('tab-rooms');
+		    const loginUsername = document.getElementById('login-username');
+		    const loginPassword = document.getElementById('login-password');
+		    const signupUsername = document.getElementById('signup-username');
+		    const signupNickname = document.getElementById('signup-nickname');
+		    const signupPassword = document.getElementById('signup-password');
+		    const inviteInput = document.getElementById('invite-nickname');
+		    const groupTitle = document.getElementById('group-title');
+		    const groupNicknames = document.getElementById('group-nicknames');
 
-            if (theme === 'geek') {
-                icon.textContent = '🌙';
-                label.textContent = 'geek';
-                title.textContent = 'KOPO_CHAT';
-                loginBtn.textContent = '$ login --connect';
-                signupBtn.textContent = '$ register --create';
-                logoutBtn.textContent = 'disconnect';
-                statusText.textContent = 'online';
-                leaveBtn.textContent = 'leave';
-                backBtn.textContent = '← back';
-                modalTitle.textContent = '> create_room';
-                membersInner.style.background = 'var(--members-bg)';
-            } else {
-                icon.textContent = '☀️';
-                label.textContent = 'postit';
-                title.textContent = '📌 KopoChat';
-                loginBtn.textContent = '로그인';
-                signupBtn.textContent = '가입하기';
-                logoutBtn.textContent = '로그아웃';
-                statusText.textContent = '접속됨 ✅';
-                leaveBtn.textContent = '🚪 나가기';
-                backBtn.textContent = '← 뒤로';
-                modalTitle.textContent = '📌 단체 채팅방 만들기';
-                membersInner.style.background = 'var(--members-bg)';
-            }
-        }
+		    if (theme === 'geek') {
+		        title.textContent = 'KOPO_CHAT() {';
+		        loginBtn.textContent = '$ login --connect';
+		        signupBtn.textContent = '$ register --create';
+		        logoutBtn.textContent = 'disconnect';
+		        statusText.textContent = 'online';
+		        leaveBtn.textContent = 'leave';
+		        backBtn.textContent = '← back';
+		        modalTitle.textContent = '> create_room';
+		        membersBtn.textContent = 'members';
+		        messageInput.placeholder = '> type a message...';
+		        tabUsers.textContent = 'USERS';
+		        tabRooms.textContent = 'ROOMS';
+		        loginUsername.placeholder = 'username';
+		        loginPassword.placeholder = 'password';
+		        signupUsername.placeholder = 'username';
+		        signupNickname.placeholder = 'nickname';
+		        signupPassword.placeholder = 'password';
+		        inviteInput.placeholder = 'invite nickname';
+		        groupTitle.placeholder = 'room title';
+		        groupNicknames.placeholder = 'invite nicknames (comma separated)';
+		    } else {
+		        title.textContent = '📌 코포챗';
+		        loginBtn.textContent = '로그인';
+		        signupBtn.textContent = '가입하기';
+		        logoutBtn.textContent = '로그아웃';
+		        statusText.textContent = '접속됨 ✅';
+		        leaveBtn.textContent = '🚪 나가기';
+		        backBtn.textContent = '← 뒤로';
+		        modalTitle.textContent = '📌 단체 채팅방 만들기';
+		        membersBtn.textContent = '👥 멤버';
+		        messageInput.placeholder = '메시지를 적어주세요...';
+		        tabUsers.textContent = '접속 유저';
+		        tabRooms.textContent = '채팅방 목록';
+		        loginUsername.placeholder = '아이디';
+		        loginPassword.placeholder = '비밀번호';
+		        signupUsername.placeholder = '아이디';
+		        signupNickname.placeholder = '닉네임 (채팅에서 보이는 이름)';
+		        signupPassword.placeholder = '비밀번호';
+		        inviteInput.placeholder = '초대할 닉네임';
+		        groupTitle.placeholder = '방 제목';
+		        groupNicknames.placeholder = '초대할 닉네임 (쉼표로 구분)';
+		    }
+
+		    // 모달 버튼도 변경
+		    const modalBtns = document.querySelectorAll('#group-modal .btn-group button');
+		    if (modalBtns.length >= 2) {
+		        modalBtns[0].textContent = theme === 'geek' ? 'create' : '만들기';
+		        modalBtns[1].textContent = theme === 'geek' ? 'cancel' : '취소';
+		    }
+
+		    // create-group-btn 텍스트
+		    const createBtn = document.getElementById('create-group-btn');
+		    createBtn.textContent = theme === 'geek' ? '+ create group room' : '+ 단체 채팅방 만들기';
+
+		    // 회원가입 링크 텍스트
+		    const switchLinks = document.querySelectorAll('.switch-link');
+		    if (switchLinks.length >= 2) {
+		        switchLinks[0].innerHTML = theme === 'geek'
+		            ? '계정이 없으신가요? <span onclick="showSignup()">회원가입</span>'
+		            : '계정이 없으신가요? <span onclick="showSignup()">회원가입</span>';
+		        switchLinks[1].innerHTML = theme === 'geek'
+		            ? '이미 계정이 있으신가요? <span onclick="showLogin()">로그인</span>'
+		            : '이미 계정이 있으신가요? <span onclick="showLogin()">로그인</span>';
+		    }
+		}
 
         // ====== 페이지 전환 ======
         function showLogin() {
@@ -905,7 +954,12 @@
             const response = await fetch('/api/chat/users', { headers: { 'Authorization': 'Bearer ' + currentToken } });
             const users = await response.json();
             const container = document.getElementById('users-list');
-            if (users.length === 0) { container.innerHTML = '<div class="empty-msg">no other users found</div>'; return; }
+			if (users.length === 0) {
+			    const theme = document.documentElement.getAttribute('data-theme');
+			    container.innerHTML = '<div class="empty-msg">' +
+			        (theme === 'geek' ? 'no other users found' : '다른 유저가 없습니다') + '</div>';
+			    return;
+			}
             container.innerHTML = '';
             users.forEach(user => {
                 const div = document.createElement('div');
@@ -923,7 +977,12 @@
             const response = await fetch('/api/chat/rooms', { headers: { 'Authorization': 'Bearer ' + currentToken } });
             const rooms = await response.json();
             const container = document.getElementById('rooms-list');
-            if (rooms.length === 0) { container.innerHTML = '<div class="empty-msg">no rooms found</div>'; return; }
+			if (rooms.length === 0) {
+			    const theme = document.documentElement.getAttribute('data-theme');
+			    container.innerHTML = '<div class="empty-msg">' +
+			        (theme === 'geek' ? 'no rooms found' : '채팅방이 없습니다') + '</div>';
+			    return;
+			}
             container.innerHTML = '';
             rooms.forEach(room => {
                 const div = document.createElement('div');
