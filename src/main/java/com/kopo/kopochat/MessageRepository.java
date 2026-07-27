@@ -1,4 +1,4 @@
-package com.realchat.realchat;
+package com.kopo.kopochat;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

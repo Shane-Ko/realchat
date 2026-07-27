@@ -1,4 +1,4 @@
-package com.realchat.realchat;
+package com.kopo.kopochat;
 
 /*
  * ChatMessage

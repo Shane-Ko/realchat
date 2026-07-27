@@ -1,4 +1,4 @@
-package com.realchat.realchat;
+package com.kopo.kopochat;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.realchat.realchat;
+package com.kopo.kopochat;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

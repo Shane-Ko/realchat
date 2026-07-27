@@ -1,13 +1,13 @@
-package com.realchat.realchat;
+package com.kopo.kopochat;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RealchatApplication {
+public class KopoChatApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RealchatApplication.class, args);
+		SpringApplication.run(KopoChatApplication.class, args);
 	}
 
 }
