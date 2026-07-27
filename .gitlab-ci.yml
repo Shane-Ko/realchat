@@ -1,0 +1,34 @@
+# ============================================
+# GitLab CI — realchat 이미지 빌드/푸시 (Kaniko rootless)
+# vcluster 제약: docker:dind 사용 불가 → Kaniko executor 사용
+# Harbor 인증: k8s Secret 마운트가 안 되므로 /kaniko/.docker/config.json 을
+#              CI 변수(HARBOR_USER/HARBOR_PASS)로 인라인 생성 (board-project 워크어라운드 이식)
+# ============================================
+stages: [build]
+
+variables:
+  REGISTRY: "std-harbor.kopoctc.kr"
+  IMAGE: "$REGISTRY/kopo02/realchat"
+
+# Kaniko debug 이미지(/kaniko/executor 포함). rootless 동작.
+build:kaniko:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    # 1) Harbor 인증 config.json 인라인 생성 (★ 핵심 워크어라운드)
+    #    CI 변수 HARBOR_USER / HARBOR_PASS 를 Settings → CI/CD → Variables 에 등록(Masked 권장)
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$REGISTRY\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASS\"}}}" > /kaniko/.docker/config.json
+    # 2) Kaniko 빌드 + 푸시 (SHA 태그 + latest 동시)
+    #    --context: 레포 루트 (Dockerfile, gradlew, src 등)
+    #    --destination: 커밋 SHA(추적 가능) + latest(기본 배포) 두 개 동시 푸시
+    - >-
+      /kaniko/executor
+      --context=$CI_PROJECT_DIR
+      --dockerfile=$CI_PROJECT_DIR/Dockerfile
+      --destination=$IMAGE:$CI_COMMIT_SHORT_SHA
+      --destination=$IMAGE:latest

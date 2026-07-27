@@ -1,0 +1,6 @@
+apiVersion: v2
+name: realchat
+description: Spring Boot realchat (WebSocket 채팅) — 단일 fat JAR + MySQL
+type: application
+version: 0.1.0                    # 차트 버전
+appVersion: "0.0.1-SNAPSHOT"      # 앱 JAR 버전 (build.gradle 과 일치)

@@ -1,0 +1,17 @@
+realchat 차트가 설치되었습니다.
+
+1. 접속 주소 (Ingress):
+   http://{{ include "realchat.host" . }}/
+   (ingress.className: {{ .Values.ingress.className }})
+
+2. 리소스 확인:
+   kubectl -n {{ .Release.Namespace }} get deploy,svc,ingress,statefulset,pvc,externalsecret -l app.kubernetes.io/instance={{ .Release.Name }}
+
+3. MySQL 비밀번호는 Vault → realchat-mysql-auth Secret 에서 자동 주입됩니다.
+   Vault 경로: secret/data/realchat (mysql-password, mysql-root-password, jwt-secret)
+
+4. 프로브 상태:
+   kubectl -n {{ .Release.Namespace }} describe pod -l app.kubernetes.io/instance={{ .Release.Name }}
+
+5. 값 변경 후 업그레이드:
+   helm upgrade realchat ./chart --set image.tag=v2

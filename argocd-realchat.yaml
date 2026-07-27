@@ -1,0 +1,27 @@
+# ============================================
+# ArgoCD Application — realchat (GitOps)
+# 단일 Application + chart 내부 sync-wave 로 MySQL(0)→app(1) 순서 보장
+# 적용: kubectl apply -f argocd-realchat.yaml -n argocd
+# ============================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: realchat
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # ★ 별도 GitOps 레포 (안 B). chart 는 소스 레포와 분리되어 여기에 보관.
+    repoURL: https://std-gitlab.kopoctc.kr/kopo02/gitops.git
+    targetRevision: main
+    path: apps/realchat/chart
+  destination:
+    server: https://kubernetes.default.svc
+    # default ns 로 두어 App 삭제 시 ns prune 위험 회피 (default 는 ArgoCD 가 생성/삭제 안 함)
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

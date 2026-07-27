@@ -2,6 +2,7 @@ package com.realchat.realchat;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -26,10 +27,16 @@ public class JwtUtil {
 	
 	// 토큰 서명에 사용하는 비밀키 (이거를 알아야 토큰을 만들 수 있음)
     // 실제 서비스에서는 이걸 코드에 적지 않고 Vault 같은 곳에 보관
-	private final String SECRET = "RealChatSecretKeyRealChatSecretKey1234";
-	
+	// ★ 외부 설정(jwt.secret)에서 주입. K8s 에서는 Vault → Secret → envFrom(JWT_SECRET).
+	private final String SECRET;
+
 	// 토큰 유효 시간: 24시간
 	private final long EXPIRATION = 1000 * 60 * 60 * 24;
+
+	// ★ 생성자 주입: final 필드 유지 + 테스트 용이
+	public JwtUtil(@Value("${jwt.secret}") String secret) {
+		this.SECRET = secret;
+	}
 	
 	// 비밀키를 SecretKey 객체로 반환
 	private SecretKey getSigningKey() {
