@@ -1,0 +1,7 @@
+build/
+.gradle/
+.idea/
+*.iml
+.git/
+src/main/resources/application-local.properties
+*-secret.yaml

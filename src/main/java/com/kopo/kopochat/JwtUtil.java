@@ -2,6 +2,7 @@ package com.kopo.kopochat;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -26,7 +27,8 @@ public class JwtUtil {
 	
 	// 토큰 서명에 사용하는 비밀키 (이거를 알아야 토큰을 만들 수 있음)
     // 실제 서비스에서는 이걸 코드에 적지 않고 Vault 같은 곳에 보관
-	private final String SECRET = "KopoChatSecretKeyKopoChatSecretKey1234";
+    @Value("${JWT_SECRET}")
+	private String SECRET;
 	
 	// 토큰 유효 시간: 24시간
 	private final long EXPIRATION = 1000 * 60 * 60 * 24;
